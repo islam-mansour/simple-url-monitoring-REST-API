@@ -1,0 +1,4 @@
+.env
+packge.json
+packge-lock.json
+node_modules/
