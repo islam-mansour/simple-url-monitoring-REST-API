@@ -68,23 +68,7 @@ const checkController = require('../controllers/checkController');
  */
 router.post("/register", userController.register);
 
-
-/**
- * /login
- *  post:
- *      summary: Login registered user
- *      responses:
- *          200:
- *              description: OK
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *                          
- *       
- */
 router.post("/login", userController.login);
-
 
 router.get('/send', userController.send);
 

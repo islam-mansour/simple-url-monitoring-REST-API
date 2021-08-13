@@ -54,34 +54,37 @@ module.exports = {
             obj[element.key] = element.value;
             headers.push(obj);    
         });
-        cron.schedule('*/' + check.interval + ' * * * * *', function() {
-            console.log('scheduler begin');
-            var options = {
-                host: check.url,
-                path: check.path,
-                port: check.port,
-                method: 'GET',
-                timeout: check.timeout,
-                authorization: check.auth,
-                headers: headers,
-              };
-              http.request(options).then(function(res){
-                if (check.failedRequests == check.threshold){
-                    notify(check, "up");
-                }
-                module.exports.updateReport(check, 1, res);
-                check.failedRequests = 0;
-                check.save();
-              }).on('error', function(err){
-                console.log("down");
-                check.failedRequests = check.failedRequests + 1;
-                module.exports.updateReport(check, 1, err);
-                check.save();
-                if (check.failedRequests == check.threshold){
-                    notify(check, "down");
-                }
-              });
-        }).start();
+        var task = cron.schedule('*/' + check.interval + ' * * * * *', function() {
+            if (check.status == Check.Status.WORKING){
+                console.log('scheduler begin');
+                var options = {
+                    host: check.url,
+                    path: check.path,
+                    port: check.port,
+                    method: 'GET',
+                    timeout: check.timeout,
+                    authorization: check.auth,
+                    headers: headers,
+                };
+                http.request(options).then(function(res){
+                    if (check.failedRequests == check.threshold){
+                        notify(check, "up");
+                    }
+                    module.exports.updateReport(check, 1, res);
+                    check.failedRequests = 0;
+                    check.save();
+                }).on('error', function(err){
+                    console.log("down");
+                    check.failedRequests = check.failedRequests + 1;
+                    module.exports.updateReport(check, 1, err);
+                    check.save();
+                    if (check.failedRequests == check.threshold){
+                        notify(check, "down");
+                    }
+                });
+            }
+        });
+        task.start();
     
     },
 
