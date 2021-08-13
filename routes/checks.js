@@ -1,12 +1,11 @@
 
 const express = require('express');
-const authMiddleware = requrie('../middleware/auth');
+const authMiddleware = require('../middleware/auth');
 const router = express.Router();
 
-route.use(authMiddleware);
+router.use(authMiddleware);
 
 const checkController = require('../controllers/checkController');
-const { route } = require('./user');
 
 /**
  * @swagger
